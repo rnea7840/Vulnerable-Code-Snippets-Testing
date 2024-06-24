@@ -1,4 +1,6 @@
-<?php     include("../common/header.php");   ?>
+<?php
+include("../common/header.php");
+?>
 
 <!-- from https://pentesterlab.com/exercises/php_include_and_post_exploitation/course -->
 <?php
@@ -10,5 +12,8 @@ hint("will exec the arg specified in the GET parameter \"cmd\"");
 </form>
 
 <?php
-    system($_GET["cmd"]);
- ?>
+    if (isset($_GET['cmd'])) {
+        $cmd = escapeshellcmd($_GET['cmd']);
+        system($cmd);
+    }
+?>
