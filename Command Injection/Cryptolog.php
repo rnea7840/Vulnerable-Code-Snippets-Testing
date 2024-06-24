@@ -2,15 +2,15 @@
 include("config.php");
 require_once("kontrol.php");
 
-// Fetch POST data and sanitize
-$opt = htmlspecialchars($_POST['opt'], ENT_QUOTES, 'UTF-8');
-$lsid = htmlspecialchars($_POST['lsid'], ENT_QUOTES, 'UTF-8');
-$sharetype = htmlspecialchars($_POST['lssharetype'], ENT_QUOTES, 'UTF-8');
-$remoteaddress = htmlspecialchars($_POST['lsremoteaddress'], ENT_QUOTES, 'UTF-8');
-$sharefolder = htmlspecialchars($_POST['lssharefolder'], ENT_QUOTES, 'UTF-8');
-$user = htmlspecialchars($_POST['lsuser'], ENT_QUOTES, 'UTF-8');
-$pass = htmlspecialchars($_POST['lspass'], ENT_QUOTES, 'UTF-8');
-$domain = htmlspecialchars($_POST['lsdomain'], ENT_QUOTES, 'UTF-8');
+// Fetch POST data
+$opt = $_POST['opt'];
+$lsid = $_POST['lsid'];
+$sharetype = $_POST['lssharetype'];
+$remoteaddress = $_POST['lsremoteaddress'];
+$sharefolder = $_POST['lssharefolder'];
+$user = $_POST['lsuser'];
+$pass = $_POST['lspass'];
+$domain = $_POST['lsdomain'];
 
 $dbConn = mysql_connect(DB_HOST, DB_USER, DB_PASS);
 if (!$dbConn) die("Out of service");
@@ -25,12 +25,12 @@ switch($opt) {
         cLogshares::fAddFileshareDB($dbConn, $sharetype, $remoteaddress, $sharefolder, $user, $pass, $domain);
         break;
     case 'check':
-        $path = "/mnt/logsource_".$lsid."_".$sharetype;
-        echo htmlspecialchars(cLogshares::fTestFileshare($path), ENT_QUOTES, 'UTF-8');
-        break;
     case 'mount':
-        cLogshares::fMountFileshareOnly($dbConn, $lsid, $sharetype);
+        if ($opt == 'mount') {
+            cLogshares::fMountFileshareOnly($dbConn, $lsid, $sharetype);
+        }
         $path = "/mnt/logsource_".$lsid."_".$sharetype;
+        // Apply htmlspecialchars at the point of output
         echo htmlspecialchars(cLogshares::fTestFileshare($path), ENT_QUOTES, 'UTF-8');
         break;
 }
